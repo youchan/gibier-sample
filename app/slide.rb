@@ -32,6 +32,22 @@ module Gibier
     @slide_name = name
   end
 
+  def self.gh_pages
+    @gh_pages
+  end
+
+  def self.gh_pages=(gh_pages)
+    @gh_pages = gh_pages
+  end
+
+  def self.assets_path
+    @assets_path
+  end
+
+  def self.assets_path=(path)
+    @assets_path = path
+  end
+
   class Slide
     include Hyalite::Component
     include Hyalite::Component::ShortHand
@@ -65,11 +81,13 @@ module Gibier
         handle_key_down(evt)
       end
 
-      @props[:ws].on(:message) do |msg|
-        (event, value) = msg.data.split(':')
-        case event
-        when 'keydown'
-          handle_key_down(value.to_i)
+      unless Gibier.gh_pages
+        @props[:ws].on(:message) do |msg|
+          (event, value) = msg.data.split(':')
+          case event
+          when 'keydown'
+            handle_key_down(value.to_i)
+          end
         end
       end
 
@@ -80,7 +98,7 @@ module Gibier
 
     def page_to(num)
       if Gibier.gh_pages
-        $window.location.assign("./#{Gibier.slide_name}##{num}")
+        $window.location.assign("./##{num}")
       else
         $window.location.assign("/#{Gibier.slide_name}##{num}")
       end
